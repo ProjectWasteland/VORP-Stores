@@ -1,10 +1,10 @@
-﻿using CitizenFX.Core;
-using System;
+﻿using System;
+using CitizenFX.Core;
 using static CitizenFX.Core.Native.API;
 
 namespace vorpstores_cl
 {
-    class ClearCaches : BaseScript
+    internal class ClearCaches : BaseScript
     {
         public ClearCaches()
         {
@@ -13,20 +13,22 @@ namespace vorpstores_cl
 
         private void OnResourceStop(string resourceName)
         {
-            if (GetCurrentResourceName() != resourceName) return;
-
-            foreach (int blip in vorpstores_init.StoreBlips)
+            if (GetCurrentResourceName() != resourceName)
             {
-                int _blip = blip;
+                return;
+            }
+
+            foreach (var blip in vorpstores_init.StoreBlips)
+            {
+                var _blip = blip;
                 RemoveBlip(ref _blip);
             }
 
-            foreach (int npc in vorpstores_init.StorePeds)
+            foreach (var npc in vorpstores_init.StorePeds)
             {
-                int _ped = npc;
+                var _ped = npc;
                 DeletePed(ref _ped);
             }
         }
-
     }
 }

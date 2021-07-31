@@ -1,12 +1,12 @@
-﻿using CitizenFX.Core;
-using CitizenFX.Core.Native;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using CitizenFX.Core;
+using CitizenFX.Core.Native;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace vorpstores_sv
 {
@@ -17,7 +17,8 @@ namespace vorpstores_sv
         public static Dictionary<string, string> Langs = new Dictionary<string, string>();
         public static string resourcePath = $"{API.GetResourcePath(API.GetCurrentResourceName())}";
 
-        public static Dictionary<string, Dictionary<string, object>> ItemsFromDB = new Dictionary<string, Dictionary<string, object>>();
+        public static Dictionary<string, Dictionary<string, object>> ItemsFromDB =
+                new Dictionary<string, Dictionary<string, object>>();
 
         public LoadConfig()
         {
@@ -35,7 +36,7 @@ namespace vorpstores_sv
                 Config = JObject.Parse(ConfigString);
                 if (File.Exists($"{resourcePath}/{Config["defaultlang"]}.json"))
                 {
-                    string langstring = File.ReadAllText($"{resourcePath}/{Config["defaultlang"]}.json", Encoding.UTF8);
+                    var langstring = File.ReadAllText($"{resourcePath}/{Config["defaultlang"]}.json", Encoding.UTF8);
                     Langs = JsonConvert.DeserializeObject<Dictionary<string, string>>(langstring);
                     Debug.WriteLine($"{API.GetCurrentResourceName()}: Language {Config["defaultlang"]}.json loaded!");
                 }
@@ -52,7 +53,7 @@ namespace vorpstores_sv
 
         public async Task LoadItemsFromDB()
         {
-            Exports["ghmattimysql"].execute("SELECT * FROM items", new[] { "" }, new Action<dynamic>((result) =>
+            Exports["ghmattimysql"].execute("SELECT * FROM items", new[] { "" }, new Action<dynamic>(result =>
             {
                 if (result.Count == 0)
                 {
@@ -60,24 +61,21 @@ namespace vorpstores_sv
                 }
                 else
                 {
-
                     foreach (var i in result)
                     {
-                        Dictionary<string, object> data_item = new Dictionary<string, object>();
+                        var data_item = new Dictionary<string, object>();
                         data_item.Add("label", i.label);
                         data_item.Add("limit", i.limit);
                         data_item.Add("type", i.type);
                         ItemsFromDB.Add(i.item, data_item);
                     }
-
                 }
-
             }));
         }
 
-        private void getConfig([FromSource]Player source)
+        private void getConfig([FromSource] Player source)
         {
-            string SItemsFromDB = JsonConvert.SerializeObject(ItemsFromDB);
+            var SItemsFromDB = JsonConvert.SerializeObject(ItemsFromDB);
             source.TriggerEvent($"{API.GetCurrentResourceName()}:SendConfig", ConfigString, Langs, SItemsFromDB);
         }
     }

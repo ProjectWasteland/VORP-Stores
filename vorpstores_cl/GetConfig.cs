@@ -1,9 +1,9 @@
-﻿using CitizenFX.Core;
-using CitizenFX.Core.Native;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using CitizenFX.Core;
+using CitizenFX.Core.Native;
+using Newtonsoft.Json.Linq;
 
 namespace vorpstores_cl
 {
@@ -15,7 +15,8 @@ namespace vorpstores_cl
 
         public GetConfig()
         {
-            EventHandlers[$"{API.GetCurrentResourceName()}:SendConfig"] += new Action<string, ExpandoObject, string>(LoadDefaultConfig);
+            EventHandlers[$"{API.GetCurrentResourceName()}:SendConfig"] +=
+                    new Action<string, ExpandoObject, string>(LoadDefaultConfig);
             TriggerServerEvent($"{API.GetCurrentResourceName()}:getConfig");
         }
 
@@ -31,6 +32,5 @@ namespace vorpstores_cl
             ItemsFromDB = JObject.Parse(ifdb);
             vorpstores_init.InitStores();
         }
-
     }
 }
